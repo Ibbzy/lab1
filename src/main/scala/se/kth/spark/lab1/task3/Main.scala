@@ -24,7 +24,7 @@ object Main {
 
     // split DataFrame into test and training data
     val Array(rawtrainDF, rawtestDF) = rawDF.randomSplit(Array(0.7, 0.3))
-    
+
     // tokenize each row
     val regexTokenizer = new RegexTokenizer()
       .setInputCol("value")
