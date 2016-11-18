@@ -54,7 +54,7 @@ object Main {
 
     //println(songsRdd.filter(_.year >= 1998).filter( _.year<=2000).count())
     println(songsDf.filter(songsDf("year") >= 1998 && songsDf("year") <= 2000).count())
-    sqlContext.sql("SELECT COUNT(*) FROM songs WHERE year>=1998 and year<=2000") .show()
+    sqlContext.sql("SELECT COUNT(*) FROM songs WHERE year>=1998 and year<=2000").show()
 
     //3. min, max and mean of the year column
     val years = songsRdd.map(_.year)

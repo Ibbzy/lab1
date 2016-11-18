@@ -8,6 +8,8 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.functions._
 
+import math.sqrt
+
 import org.apache.spark.hack._
 import org.apache.spark.sql.Row
 import org.apache.spark.ml.linalg.Vectors
@@ -18,15 +20,16 @@ case class Instance(label: Double, features: Vector)
 
 object Helper {
   def rmse(labelsAndPreds: RDD[(Double, Double)]): Double = {
-    ???
+    val n = labelsAndPreds.count()
+    sqrt(labelsAndPreds.map(lap => (lap._1-lap._2)*(lap._1-lap._2)/n).sum())
   }
 
   def predictOne(weights: Vector, features: Vector): Double = {
-    ???
+    VectorHelper.dot(weights,features)
   }
 
   def predict(weights: Vector, data: RDD[Instance]): RDD[(Double, Double)] = {
-    ???
+    data.map(ins => (ins.label,VectorHelper.dot(weights,ins.features)))
   }
 }
 
@@ -38,11 +41,13 @@ class MyLinearRegressionImpl(override val uid: String)
   override def copy(extra: ParamMap): MyLinearRegressionImpl = defaultCopy(extra)
 
   def gradientSummand(weights: Vector, lp: Instance): Vector = {
-    ???
+    VectorHelper.dot(lp.features,VectorHelper.dot(weights,lp.features)-lp.label)
+
   }
 
   def gradient(d: RDD[Instance], weights: Vector): Vector = {
-    ???
+    val t = d.map(lp => (1,gradientSummand(weights,lp))).reduceByKey((x,y) => VectorHelper.sum(x,y))
+    t.collect().apply(0)._2
   }
 
   def linregGradientDescent(trainData: RDD[Instance], numIters: Int): (Vector, Array[Double]) = {

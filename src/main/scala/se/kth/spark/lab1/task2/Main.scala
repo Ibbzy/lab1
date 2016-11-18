@@ -28,7 +28,7 @@ object Main {
     val regexTokenizer = new RegexTokenizer()
       .setInputCol("raw")
       .setOutputCol("words")
-      .setPattern("\\W")
+      .setPattern(",").setGaps(true)
 
     //Step2: transform with tokenizer and show 5 rows
     val regDF  = regexTokenizer.transform(rawDF)

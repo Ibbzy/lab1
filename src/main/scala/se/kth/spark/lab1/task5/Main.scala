@@ -64,7 +64,7 @@ object Main {
     // linear regression setup
     val myLR = new LinearRegression()
       .setLabelCol("label")
-      .setFeaturesCol("features")
+      .setFeaturesCol("Pfeatures")
       .setMaxIter(10)
       .setRegParam(0.1)
       .setElasticNetParam(0.1)
